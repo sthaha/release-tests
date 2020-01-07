@@ -3,12 +3,26 @@ package pipeline
 import (
 	"testing"
 
+	"github.com/openshift-pipelines/release-tests/pkg/operator"
+	"github.com/openshift-pipelines/release-tests/pkg/pipelines"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestPipelineRunTutorial(t *testing.T) {
 	Convey("Given that Operator is installed", t, func() {
 		Convey("I should be able to run Pipelines Tutorial as a non admin", nil)
+	})
+}
+
+func TestSamplePipelineRun(t *testing.T) {
+	clients, ns, cleanup := operator.Subscribe(t, "../../../config/subscription.yaml")
+	defer cleanup()
+
+	Convey("Given that Operator is installed", t, func() {
+		Convey("I should be able to run Pipelines a non admin", func() {
+			pipelines.CreateSamplePiplines(clients, ns)
+			pipelines.StartSamplePipelineUsingTkn(t, ns)
+		})
 	})
 }
 
